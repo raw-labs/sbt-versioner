@@ -32,7 +32,6 @@ developers := List(
 licenses += ("MIT", url("https://opensource.org/licenses/MIT"))
 
 name := "sbt-versioner"
-version := "0.1.0"
 
 scalaVersion := "2.12.18"
 
