@@ -19,6 +19,7 @@ object VersionerPlugin extends AutoPlugin {
         }
       }
 
+      val isDirty = exec("git status --porcelain").nonEmpty
       val tagsOnHead = exec("git tag --points-at HEAD")
       val latestTag = exec("git describe --tags --abbrev=0")
       val branchNameRaw = exec("git rev-parse --abbrev-ref HEAD")
@@ -29,9 +30,9 @@ object VersionerPlugin extends AutoPlugin {
       }
 
       if (tagsOnHead.nonEmpty) {
-        // When the current commit is tagged, use the tag as the version without the leading 'v'
+        // When the current commit is tagged, use the tag as the version without the leading 'v' (with '-dirty' suffix if needed)
         val tagVersion = stripV(tagsOnHead.split("\n").head.trim)
-        tagVersion
+        if (isDirty) tagVersion + "-dirty" else tagVersion
       } else if (latestTag.nonEmpty && branchName.nonEmpty) {
         // When on a branch, use <latest_tag>-<branch_name>-SNAPSHOT as the version
         val cleanLatestTag = stripV(latestTag)
